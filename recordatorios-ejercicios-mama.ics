@@ -1,0 +1,133 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Ejercicios Mama//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Ejercicios de mamá
+BEGIN:VEVENT
+UID:ejercicio-mama-0@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T070000
+DTEND:20261118T071000
+RRULE:FREQ=DAILY
+SUMMARY:🛏️ Despertar en la cama
+DESCRIPTION:Antes de levantarse: respirar profundo 5 veces, mover tobillos 10, deslizar talones 5 cada pierna, apretar nalgas 5. Levantarse girando de lado. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🛏️ Despertar en la cama
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-1@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T083000
+DTEND:20261118T084000
+RRULE:FREQ=DAILY
+SUMMARY:🪑 Piernas sentada
+DESCRIPTION:Marchar sentada 10 cada pierna. Estirar la rodilla 8 cada pierna. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🪑 Piernas sentada
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-2@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T100000
+DTEND:20261118T101000
+RRULE:FREQ=DAILY
+SUMMARY:🚶‍♀️ Paseo por la casa
+DESCRIPTION:Caminar despacio 3 a 5 minutos con caminador o acompañada. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🚶‍♀️ Paseo por la casa
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-3@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T113000
+DTEND:20261118T114000
+RRULE:FREQ=DAILY
+SUMMARY:💪 Pararse y sentarse
+DESCRIPTION:Pararse y sentarse despacio de una silla firme 5 veces. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:💪 Pararse y sentarse
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-4@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T130000
+DTEND:20261118T131000
+RRULE:FREQ=DAILY
+SUMMARY:🙌 Manos y hombros
+DESCRIPTION:Abrir y cerrar manos 10. Subir hombros 5. Girar hombros hacia atrás 5. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🙌 Manos y hombros
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-5@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T143000
+DTEND:20261118T144000
+RRULE:FREQ=DAILY
+SUMMARY:🌿 Paseo después del almuerzo
+DESCRIPTION:Caminata suave de 3 a 5 minutos. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🌿 Paseo después del almuerzo
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-6@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T160000
+DTEND:20261118T161000
+RRULE:FREQ=DAILY
+SUMMARY:🦶 Puntas y talones
+DESCRIPTION:Agarrada de la mesa: puntas de pie 8, talones 8. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🦶 Puntas y talones
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-7@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T173000
+DTEND:20261118T174000
+RRULE:FREQ=DAILY
+SUMMARY:🤲 Brazos suaves
+DESCRIPTION:Subir brazos hasta donde no duela 5. Empujar palmas 5 segundos, 5 veces. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🤲 Brazos suaves
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:ejercicio-mama-8@claude
+DTSTAMP:20261117T150000Z
+DTSTART:20261118T190000
+DTEND:20261118T191000
+RRULE:FREQ=DAILY
+SUMMARY:🌙 Relajarse para la noche
+DESCRIPTION:Respirar profundo 5. Círculos con los pies 5. Pensar en algo bonito de hoy. ¡Usted puede\, mamá! 💛
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:🌙 Relajarse para la noche
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+END:VCALENDAR

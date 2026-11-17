@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mom's Health CSI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff8f1; --card:#ffffff; --ink:#3a2a20; --soft:#7a6252;
+    --accent:#e2733b; --accent-d:#c55d28; --ok:#3f9a5c; --ok-l:#e5f4e9;
+    --line:#f0e1d3; --sun:#ffd98a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:'Nunito',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:22px;line-height:1.4}
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  .brand{font-weight:800;color:var(--accent-d);font-size:18px;letter-spacing:.5px}
+  header h1{font-size:34px;margin:4px 0 2px;font-weight:800}
+  header .date{color:var(--soft);font-size:20px;text-transform:capitalize}
+  .progress{margin:18px 0 8px;background:var(--line);border-radius:999px;height:22px;overflow:hidden}
+  .progress > div{height:100%;background:linear-gradient(90deg,var(--ok),#6cc187);width:0;transition:width .6s}
+  .progress-label{font-size:20px;color:var(--soft);font-weight:700}
+  .now{background:var(--card);border-radius:26px;padding:22px 20px;margin:20px 0;box-shadow:0 4px 18px rgba(120,70,30,.10);border:3px solid var(--sun)}
+  .now.due{border-color:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(226,115,59,.35)}50%{box-shadow:0 0 0 12px rgba(226,115,59,0)}}
+  .tag{display:inline-block;font-size:18px;font-weight:800;color:var(--accent-d);background:#fde9dc;border-radius:999px;padding:4px 14px}
+  .now .emoji{font-size:64px;line-height:1;margin:12px 0 4px}
+  .now h2{font-size:30px;margin:4px 0 6px;font-weight:800}
+  .now .where{color:var(--soft);font-size:20px;margin-bottom:10px}
+  .steps{margin:8px 0 0;padding:0;list-style:none}
+  .steps li{padding:12px 0;border-top:2px dashed var(--line);font-size:22px}
+  .steps li b{color:var(--accent-d)}
+  .btns{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+  button{font-family:inherit;font-weight:800;border:0;border-radius:20px;padding:20px;font-size:26px;cursor:pointer;width:100%}
+  .b-done{background:var(--ok);color:#fff}
+  .b-done:active{transform:scale(.98)}
+  .b-voice{background:#fde9dc;color:var(--accent-d)}
+  .b-small{font-size:20px;padding:14px;background:transparent;color:var(--soft);text-decoration:underline}
+  h3{font-size:24px;margin:30px 0 10px}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .item{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:14px 16px;border:2px solid var(--line);cursor:pointer;text-align:left}
+  .item .t{font-weight:800;min-width:96px;font-size:20px;color:var(--soft)}
+  .item .e{font-size:34px}
+  .item .n{flex:1;font-size:21px;font-weight:700}
+  .item .c{font-size:30px}
+  .item.done{background:var(--ok-l);border-color:#bfe3c9}
+  .item.done .n{color:var(--ok)}
+  .item.sel{border-color:var(--accent)}
+  .care{margin-top:30px;background:#fff1e6;border-radius:18px;padding:16px 18px;font-size:19px;color:#6b4a35}
+  .care b{color:var(--accent-d)}
+  /* celebración */
+  .party{position:fixed;inset:0;background:rgba(58,42,32,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+  .party.show{display:flex}
+  .party .box{background:#fff;border-radius:30px;padding:30px 24px;max-width:520px;width:100%;text-align:center;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  .party .big{font-size:84px;line-height:1}
+  .party h2{font-size:32px;margin:10px 0}
+  .party p{font-size:24px;margin:0 0 20px;color:var(--ink)}
+  .confetti{position:fixed;top:-40px;font-size:30px;pointer-events:none;z-index:11;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+  .alldone{text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">💛 Mom's Health CSI</div>
+    <div class="date" id="date"></div>
+    <h1 id="hello">¡Buenos días, mamá! ☀️</h1>
+  </header>
+
+  <div class="progress"><div id="bar"></div></div>
+  <div class="progress-label" id="plabel"></div>
+
+  <section class="now" id="now"></section>
+
+  <h3>Mi día de hoy</h3>
+  <div class="list" id="list"></div>
+
+  <div class="care">
+    <b>Para cuidarse:</b> haga cada ejercicio despacio y respirando. Si siente dolor fuerte, mareo o le falta el aire, <b>pare y descanse</b>. No gire ni doble la espalda con fuerza. Muéstrele estos ejercicios a su médico o fisioterapeuta.
+  </div>
+  <div class="care" style="background:#eef6f0;color:#2f5d3c">
+    <b style="color:#3f9a5c">⏰ Recordatorios:</b> toque <a href="recordatorios-ejercicios-mama.ics" style="color:#3f9a5c;font-weight:800">aquí para agregar las alarmas</a> al calendario de su celular (una vez nada más).
+  </div>
+</main>
+
+<div class="party" id="party">
+  <div class="box">
+    <div class="big" id="pEmoji">🎉</div>
+    <h2 id="pTitle">¡Lo logró!</h2>
+    <p id="pMsg"></p>
+    <button class="b-done" id="pClose">Gracias 💛</button>
+  </div>
+</div>
+
+<script>
+const EX = [
+  {t:"07:00", e:"🛏️", n:"Despertar en la cama", w:"Acostada boca arriba, antes de levantarse",
+   s:[["Respirar profundo","Tome aire por la nariz, inflando la barriga, y bótelo despacio por la boca. <b>5 veces</b>."],
+      ["Mover los tobillos","Mueva los pies hacia arriba y hacia abajo, como pisando un pedal. <b>10 veces</b>."],
+      ["Deslizar los talones","Doble una rodilla deslizando el talón por la cama, y vuelva a estirarla. <b>5 veces cada pierna</b>."],
+      ["Apretar las nalgas","Apriete las nalgas, cuente hasta 3 y suelte. <b>5 veces</b>."],
+      ["Levantarse con cuidado","Gire de lado todo el cuerpo junto, baje las piernas y empújese con los brazos para sentarse."]]},
+  {t:"08:30", e:"🪑", n:"Piernas sentada", w:"Sentada en una silla firme, después del desayuno",
+   s:[["Marchar sentada","Levante una rodilla y luego la otra, como si caminara. <b>10 veces cada pierna</b>."],
+      ["Estirar la rodilla","Estire una pierna hacia adelante, cuente hasta 3 y bájela. <b>8 veces cada pierna</b>."]]},
+  {t:"10:00", e:"🚶‍♀️", n:"Paseo por la casa", w:"Con el caminador o acompañada",
+   s:[["Caminar","Camine despacio por la casa <b>3 a 5 minutos</b>. Si se cansa, siéntese y descanse."],
+      ["Mirar al frente","Camine derechita, mirando hacia adelante y no al piso."]]},
+  {t:"11:30", e:"💪", n:"Pararse y sentarse", w:"Silla firme con brazos, alguien cerca",
+   s:[["Pararse","Échese hacia adelante, apóyese en los brazos de la silla y póngase de pie."],
+      ["Sentarse despacio","Siéntese despacio, sin dejarse caer. <b>5 veces</b>. Es el ejercicio más importante para volver a caminar."]]},
+  {t:"13:00", e:"🙌", n:"Manos y hombros", w:"Sentada, antes del almuerzo",
+   s:[["Abrir y cerrar las manos","Haga puño y abra bien los dedos. <b>10 veces</b>."],
+      ["Subir los hombros","Suba los hombros hacia las orejas y bájelos. <b>5 veces</b>."],
+      ["Girar los hombros","Haga círculos suaves con los hombros hacia atrás. <b>5 veces</b>."]]},
+  {t:"14:30", e:"🌿", n:"Paseo después del almuerzo", w:"Con el caminador o acompañada",
+   s:[["Caminar suave","Una caminata cortita de <b>3 a 5 minutos</b> para ayudar la digestión."],
+      ["Si hace buen día","Salga un ratico al patio o a la ventana a tomar aire y sol."]]},
+  {t:"16:00", e:"🦶", n:"Puntas y talones", w:"De pie, agarrada de la mesa o el mesón",
+   s:[["Puntas de pie","Agarrada con las dos manos, súbase en las puntas y baje despacio. <b>8 veces</b>."],
+      ["Talones","Levante las puntas de los pies, quedando en los talones. <b>8 veces</b>."]]},
+  {t:"17:30", e:"🤲", n:"Brazos suaves", w:"Sentada",
+   s:[["Subir los brazos","Suba los brazos hacia adelante solo hasta donde no le duela, y bájelos. <b>5 veces</b>."],
+      ["Empujar las palmas","Junte las palmas frente al pecho y empújelas, cuente hasta 5 y suelte. <b>5 veces</b>."]]},
+  {t:"19:00", e:"🌙", n:"Relajarse para la noche", w:"Sentada cómoda",
+   s:[["Respirar profundo","Respire despacio, inflando la barriga. <b>5 veces</b>."],
+      ["Mover los tobillos","Haga círculos con los pies. <b>5 veces para cada lado</b>."],
+      ["Pensar en lo bueno","Piense en una cosa bonita de hoy. ¡Terminó su día! 💛"]]}
+];
+
+const CHEERS = [
+  ["🎉","¡Lo logró!","Cada movimiento cuenta. ¡Hoy su cuerpo está un poquito más fuerte!"],
+  ["🌟","¡Qué orgullo!","Usted es una guerrera. ¡Siga así, mamá!"],
+  ["💪","¡Muy bien hecho!","Sus piernas se lo agradecen. Paso a paso se llega lejos."],
+  ["🌻","¡Excelente!","Un pasito más hoy es más fuerza para mañana."],
+  ["💛","¡Así se hace!","Su familia está muy orgullosa de usted."],
+  ["👏","¡Bravo!","Lo difícil es empezar, ¡y usted ya lo hizo!"],
+  ["🌈","¡Qué maravilla!","Cada día que se mueve, gana vida y energía."],
+  ["🏅","¡Campeona!","Otro ejercicio listo. ¡Usted puede con todo!"],
+  ["☀️","¡Felicitaciones!","Se nota su esfuerzo. ¡Siga brillando!"]
+];
+
+// ---- almacenamiento (puede no estar disponible) ----
+const today = () => { const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
+function load(){ try{ return JSON.parse(localStorage.getItem("mama-"+today())||"[]"); }catch(e){ return mem; } }
+function save(a){ mem=a; try{ localStorage.setItem("mama-"+today(), JSON.stringify(a)); }catch(e){} }
+let mem = [];
+let done = load();
+let selected = null;
+
+const mins = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
+const nowMins = () => { const d=new Date(); return d.getHours()*60+d.getMinutes(); };
+function fmt(t){ let [h,m]=t.split(":").map(Number); const ap=h<12?"a. m.":"p. m."; h=h%12||12; return h+":"+String(m).padStart(2,"0")+" "+ap; }
+
+function currentIndex(){
+  const n = nowMins();
+  let due = -1;
+  EX.forEach((x,i)=>{ if(mins(x.t)<=n && !done.includes(i)) due=i; });
+  if(due>=0) return {i:due, due:true};
+  const next = EX.findIndex((x,i)=>mins(x.t)>n && !done.includes(i));
+  if(next>=0) return {i:next, due:false};
+  const pending = EX.findIndex((x,i)=>!done.includes(i));
+  return pending>=0 ? {i:pending, due:true} : {i:-1, due:false};
+}
+
+function render(){
+  const d = new Date();
+  document.getElementById("date").textContent = d.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
+  const h = d.getHours();
+  document.getElementById("hello").textContent = h<12 ? "¡Buenos días, mamá! ☀️" : h<19 ? "¡Buenas tardes, mamá! 🌻" : "¡Buenas noches, mamá! 🌙";
+  document.getElementById("bar").style.width = (done.length/EX.length*100)+"%";
+  document.getElementById("plabel").textContent = done.length===EX.length ? "¡Hizo todos los ejercicios de hoy! 🏆" : "Hoy lleva "+done.length+" de "+EX.length+" ejercicios";
+
+  const cur = currentIndex();
+  const idx = selected!==null ? selected : cur.i;
+  const box = document.getElementById("now");
+  if(idx<0){
+    box.className="now alldone";
+    box.innerHTML = '<div class="emoji">🏆</div><h2>¡Terminó todo por hoy!</h2><div class="where">Descanse y siéntase orgullosa. Mañana seguimos. 💛</div>';
+  } else {
+    const x = EX[idx], isDone = done.includes(idx);
+    const isDue = selected===null && cur.due;
+    box.className = "now"+(isDue?" due":"");
+    const label = isDone ? "✅ Ya lo hizo" : isDue ? "⏰ ¡Es hora! · "+fmt(x.t) : (selected===null ? "Próximo · "+fmt(x.t) : fmt(x.t));
+    box.innerHTML =
+      '<span class="tag">'+label+'</span>'+
+      '<div class="emoji">'+x.e+'</div><h2>'+x.n+'</h2><div class="where">'+x.w+'</div>'+
+      '<ul class="steps">'+x.s.map(s=>'<li><b>'+s[0]+':</b> '+s[1]+'</li>').join("")+'</ul>'+
+      '<div class="btns">'+
+        '<button class="b-voice" id="voice">🔊 Escuchar instrucciones</button>'+
+        (isDone ? '<button class="b-small" id="undo">Desmarcar</button>' : '<button class="b-done" id="ok">✅ ¡Lo hice!</button>')+
+        (selected!==null ? '<button class="b-small" id="back">Volver al ejercicio de ahora</button>' : '')+
+      '</div>';
+    document.getElementById("voice").onclick = ()=>speak(x.n+". "+x.w+". "+x.s.map(s=>s[0]+": "+s[1].replace(/<[^>]+>/g,"")).join(". "));
+    const ok = document.getElementById("ok"); if(ok) ok.onclick = ()=>complete(idx);
+    const un = document.getElementById("undo"); if(un) un.onclick = ()=>{ save(done.filter(i=>i!==idx)); done=load(); render(); };
+    const bk = document.getElementById("back"); if(bk) bk.onclick = ()=>{ selected=null; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+  }
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  EX.forEach((x,i)=>{
+    const b = document.createElement("button");
+    b.className = "item"+(done.includes(i)?" done":"")+(i===idx?" sel":"");
+    b.innerHTML = '<span class="t">'+fmt(x.t)+'</span><span class="e">'+x.e+'</span><span class="n">'+x.n+'</span><span class="c">'+(done.includes(i)?"✅":"⬜")+'</span>';
+    b.onclick = ()=>{ selected=i; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+    list.appendChild(b);
+  });
+}
+
+function speak(text){
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang="es-ES"; u.rate=0.85;
+    const v = speechSynthesis.getVoices().find(v=>v.lang && v.lang.startsWith("es"));
+    if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function complete(i){
+  if(!done.includes(i)){ done.push(i); save(done); done=load(); }
+  selected=null;
+  let c = CHEERS[Math.floor(Math.random()*CHEERS.length)];
+  if(done.length===EX.length) c=["🏆","¡Día completo!","¡Hizo TODOS sus ejercicios de hoy! Usted es una campeona. 💛"];
+  document.getElementById("pEmoji").textContent=c[0];
+  document.getElementById("pTitle").textContent=c[1];
+  document.getElementById("pMsg").textContent=c[2];
+  document.getElementById("party").classList.add("show");
+  speak(c[1]+" "+c[2]);
+  try{ navigator.vibrate && navigator.vibrate([120,60,120]); }catch(e){}
+  confetti();
+  render();
+}
+
+function confetti(){
+  const items=["🎉","⭐","💛","🌸","🎊","✨"];
+  for(let k=0;k<28;k++){
+    const s=document.createElement("div");
+    s.className="confetti"; s.textContent=items[k%items.length];
+    s.style.left=Math.random()*100+"vw";
+    s.style.animationDuration=(2+Math.random()*2)+"s";
+    s.style.animationDelay=(Math.random()*0.6)+"s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4800);
+  }
+}
+
+document.getElementById("pClose").onclick = ()=>document.getElementById("party").classList.remove("show");
+
+// Revisar cada 30 segundos (y si cambia el día, reiniciar)
+let lastDay = today();
+setInterval(()=>{
+  if(today()!==lastDay){ lastDay=today(); mem=[]; done=load(); selected=null; }
+  if(!document.getElementById("party").classList.contains("show")) render();
+},30000);
+
+render();
+</script>
+</body>
+</html>
