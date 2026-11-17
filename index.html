@@ -18,7 +18,7 @@
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
   .brand{font-weight:800;color:var(--accent-d);font-size:18px;letter-spacing:.5px}
   header h1{font-size:34px;margin:4px 0 2px;font-weight:800}
-  header .date{color:var(--soft);font-size:20px;text-transform:capitalize}
+  header .date{color:var(--soft);font-size:20px}
   .progress{margin:18px 0 8px;background:var(--line);border-radius:999px;height:22px;overflow:hidden}
   .progress > div{height:100%;background:linear-gradient(90deg,var(--ok),#6cc187);width:0;transition:width .6s}
   .progress-label{font-size:20px;color:var(--soft);font-weight:700}
@@ -169,7 +169,7 @@ function currentIndex(){
 
 function render(){
   const d = new Date();
-  document.getElementById("date").textContent = d.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
+  const ds = d.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"}); document.getElementById("date").textContent = ds.charAt(0).toUpperCase()+ds.slice(1);
   const h = d.getHours();
   document.getElementById("hello").textContent = h<12 ? "¡Buenos días, mamá! ☀️" : h<19 ? "¡Buenas tardes, mamá! 🌻" : "¡Buenas noches, mamá! 🌙";
   document.getElementById("bar").style.width = (done.length/EX.length*100)+"%";
