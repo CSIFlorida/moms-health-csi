@@ -38,6 +38,7 @@
   .b-done:active{transform:scale(.98)}
   .b-voice{background:#fde9dc;color:var(--accent-d)}
   .b-small{font-size:20px;padding:14px;background:transparent;color:var(--soft);text-decoration:underline}
+  .vhelp{display:none;background:#fff4d6;border-radius:14px;padding:12px 14px;font-size:19px;color:#6b4a35}
   h3{font-size:24px;margin:30px 0 10px}
   .list{display:flex;flex-direction:column;gap:10px}
   .item{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:14px 16px;border:2px solid var(--line);cursor:pointer;text-align:left}
@@ -192,6 +193,7 @@ function render(){
       '<ul class="steps">'+x.s.map(s=>'<li><b>'+s[0]+':</b> '+s[1]+'</li>').join("")+'</ul>'+
       '<div class="btns">'+
         '<button class="b-voice" id="voice">🔊 Escuchar instrucciones</button>'+
+        '<div id="voicehelp" class="vhelp"></div>'+
         (isDone ? '<button class="b-small" id="undo">Desmarcar</button>' : '<button class="b-done" id="ok">✅ ¡Lo hice!</button>')+
         (selected!==null ? '<button class="b-small" id="back">Volver al ejercicio de ahora</button>' : '')+
       '</div>';
@@ -212,15 +214,52 @@ function render(){
   });
 }
 
-function speak(text){
+// ---- Lectura en voz alta (con arreglos para iPhone) ----
+const canSpeak = ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window);
+let esVoice = null;
+function pickVoice(){
   try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang="es-ES"; u.rate=0.85;
-    const v = speechSynthesis.getVoices().find(v=>v.lang && v.lang.startsWith("es"));
-    if(v) u.voice=v;
-    speechSynthesis.speak(u);
+    const vs = speechSynthesis.getVoices();
+    const pref = ["es-CO","es-US","es-MX","es-419","es-ES"];
+    for(const p of pref){ const v = vs.find(v=>v.lang && v.lang.replace("_","-").toLowerCase()===p.toLowerCase()); if(v){ esVoice=v; return; } }
+    esVoice = vs.find(v=>v.lang && v.lang.toLowerCase().startsWith("es")) || null;
   }catch(e){}
+}
+if(canSpeak){ pickVoice(); try{ speechSynthesis.addEventListener("voiceschanged", pickVoice); }catch(e){ speechSynthesis.onvoiceschanged = pickVoice; } }
+
+function setVoiceBtn(speaking){
+  const b = document.getElementById("voice");
+  if(b) b.textContent = speaking ? "⏹️ Parar la voz" : "🔊 Escuchar instrucciones";
+}
+function showVoiceHelp(msg){
+  const h = document.getElementById("voicehelp");
+  if(h){ h.innerHTML = msg; h.style.display = "block"; }
+}
+
+function speak(text, force){
+  if(!canSpeak){
+    showVoiceHelp("Este navegador no puede leer en voz alta. Abra la app en <b>Safari</b> (no desde WhatsApp ni Facebook).");
+    return;
+  }
+  const synth = window.speechSynthesis;
+  // Si ya está hablando, el botón sirve para parar
+  if(!force && (synth.speaking || synth.pending)){ synth.cancel(); setVoiceBtn(false); return; }
+  if(!esVoice) pickVoice();
+  // Partir en frases cortas: el iPhone a veces corta textos largos
+  const parts = (text.replace(/\s+/g," ").match(/[^.!?:]+[.!?:]*/g)||[text]).map(t=>t.trim()).filter(Boolean);
+  let started = false;
+  parts.forEach((p, k)=>{
+    const u = new SpeechSynthesisUtterance(p);
+    if(esVoice){ u.voice = esVoice; u.lang = esVoice.lang; } else { u.lang = "es-US"; }
+    u.rate = 0.9; u.pitch = 1; u.volume = 1;
+    u.onstart = ()=>{ started = true; setVoiceBtn(true); };
+    u.onend = ()=>{ if(k===parts.length-1) setVoiceBtn(false); };
+    u.onerror = (e)=>{ setVoiceBtn(false); if(e && e.error!=="interrupted" && e.error!=="canceled") showVoiceHelp("No se pudo leer en voz alta. Revise que el iPhone <b>no esté en silencio</b> y que el <b>volumen</b> esté alto."); };
+    synth.speak(u); // dentro del toque: así lo exige el iPhone
+  });
+  try{ synth.resume(); }catch(e){}
+  // Si en 3 segundos no empezó, mostrar ayuda
+  setTimeout(()=>{ if(!started && !synth.speaking){ showVoiceHelp("¿No se escucha nada? En el iPhone: <b>quite el modo silencio</b> (botón del lado izquierdo del teléfono) y <b>suba el volumen</b>. Luego toque el botón otra vez."); } }, 3000);
 }
 
 function complete(i){
@@ -232,7 +271,8 @@ function complete(i){
   document.getElementById("pTitle").textContent=c[1];
   document.getElementById("pMsg").textContent=c[2];
   document.getElementById("party").classList.add("show");
-  speak(c[1]+" "+c[2]);
+  try{ if(canSpeak) speechSynthesis.cancel(); }catch(e){}
+  speak(c[1]+". "+c[2], true);
   try{ navigator.vibrate && navigator.vibrate([120,60,120]); }catch(e){}
   confetti();
   render();
@@ -257,7 +297,7 @@ document.getElementById("pClose").onclick = ()=>document.getElementById("party")
 let lastDay = today();
 setInterval(()=>{
   if(today()!==lastDay){ lastDay=today(); mem=[]; done=load(); selected=null; }
-  if(!document.getElementById("party").classList.contains("show")) render();
+  const busy = canSpeak && speechSynthesis.speaking; if(!busy && !document.getElementById("party").classList.contains("show")) render();
 },30000);
 
 render();
